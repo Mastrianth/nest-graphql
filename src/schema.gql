@@ -1,0 +1,81 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Post {
+  id: String!
+  name: String!
+  blog: Blog!
+}
+
+type Blog {
+  id: String!
+  name: String!
+  posts: Post!
+  author: User!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  role: String!
+  blog: Blog!
+}
+
+type Query {
+  users: [User!]!
+  user(id: String!): User!
+  blog(id: Int!): Blog!
+  post(id: Int!): Post!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserDto!): User!
+  updateUser(updateUserInput: UpdateUserDto!): User!
+  deleteUser(id: String!): Boolean!
+  login(email: String!, password: String!): String!
+  createBlog(createBlogInput: CreateBlogInput!): Blog!
+  updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
+  removeBlog(id: Int!): Blog!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  removePost(id: Int!): Post!
+}
+
+input CreateUserDto {
+  name: String!
+  email: String!
+  password: String!
+  role: String!
+}
+
+input UpdateUserDto {
+  id: Int!
+  name: String
+  email: String
+  role: String
+}
+
+input CreateBlogInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateBlogInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePostInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePostInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

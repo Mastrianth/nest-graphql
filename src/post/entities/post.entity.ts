@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Blog } from 'src/blog/entities/blog.entity';
-import { RolesEnum } from '../interface/roles.enum';
 
 @ObjectType()
 @Entity()
-export class User {
+export class Post {
   @ApiProperty()
   @Field()
   @PrimaryGeneratedColumn('uuid')
@@ -18,22 +17,7 @@ export class User {
   name: string;
 
   @ApiProperty()
-  @Field()
-  @Column()
-  email: string;
-
-  @ApiProperty()
-  @Field()
-  @Column()
-  password: string;
-
-  @ApiProperty()
-  @Field()
-  @Column()
-  role: RolesEnum;
-
-  @ApiProperty()
   @Field(() => Blog)
-  @OneToOne(() => Blog)
+  @ManyToOne(() => Blog)
   blog: Blog;
 }
