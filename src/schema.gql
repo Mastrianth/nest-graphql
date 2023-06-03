@@ -27,8 +27,8 @@ type User {
 type Query {
   users: [User!]!
   user(id: String!): User!
-  blog(id: Int!): Blog!
-  post(id: Int!): Post!
+  blog(id: String!): Blog!
+  post(id: String!): Post!
 }
 
 type Mutation {
@@ -38,10 +38,10 @@ type Mutation {
   login(email: String!, password: String!): String!
   createBlog(createBlogInput: CreateBlogInput!): Blog!
   updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
-  removeBlog(id: Int!): Blog!
+  removeBlog(id: String!): Blog!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
-  removePost(id: Int!): Post!
+  removePost(id: String!): Post!
 }
 
 input CreateUserDto {
@@ -59,23 +59,19 @@ input UpdateUserDto {
 }
 
 input CreateBlogInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
 }
 
 input UpdateBlogInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  id: String!
 }
 
 input CreatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
 }
 
 input UpdatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String!
+  id: String!
 }

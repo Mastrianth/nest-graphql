@@ -1,7 +1,11 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 @InputType()
 export class CreateBlogInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field()
+  @IsString()
+  @ApiProperty()
+  name: string;
 }

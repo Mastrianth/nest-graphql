@@ -1,8 +1,16 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { PostService } from './post.service';
 import { Post } from './entities/post.entity';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
+import { Blog } from 'src/blog/entities/blog.entity';
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -14,12 +22,15 @@ export class PostResolver {
   }
 
   @Query(() => [Post], { name: 'post' })
-  findAll() {
-    return this.postService.findAll();
+  findAll(
+    @Args('page', { nullable: true }) page: number,
+    @Args('limit', { nullable: true }) limit: number,
+  ) {
+    return this.postService.findAll(page, limit);
   }
 
   @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.postService.findOne(id);
   }
 
@@ -29,7 +40,12 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
-  removePost(@Args('id', { type: () => Int }) id: number) {
-    return this.postService.remove(id);
+  removePost(@Args('id') id: string) {
+    return this.postService.delete(id);
+  }
+
+  @ResolveField(() => Blog)
+  async blog(@Parent() post: Post) {
+    return this.postService.findBlogByPostId(post.id);
   }
 }

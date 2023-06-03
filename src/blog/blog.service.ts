@@ -1,26 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateBlogInput } from './dto/create-blog.input';
-import { UpdateBlogInput } from './dto/update-blog.input';
+import { Blog } from './entities/blog.entity';
+import { Repository } from 'typeorm';
+import { RepositoryEnum } from 'src/constants/repository.enum';
 
 @Injectable()
 export class BlogService {
-  create(createBlogInput: CreateBlogInput) {
-    return 'This action adds a new blog';
+  constructor(
+    @Inject(RepositoryEnum.blog)
+    private readonly blogRepository: Repository<Blog>,
+  ) {}
+
+  async findAll(page: number, limit: number): Promise<Blog[]> {
+    const skip = (page - 1) * limit;
+    return this.blogRepository.find({ skip, take: limit });
   }
 
-  findAll() {
-    return `This action returns all blog`;
+  async findOne(id: string): Promise<Blog> {
+    return this.blogRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} blog`;
+  async create(input: CreateBlogInput): Promise<Blog> {
+    const blog = this.blogRepository.create(input);
+    return this.blogRepository.save(blog);
   }
 
-  update(id: number, updateBlogInput: UpdateBlogInput) {
-    return `This action updates a #${id} blog`;
+  async update(id: string, input: Partial<Blog>): Promise<Blog> {
+    await this.blogRepository.update({ id }, { ...input });
+    return this.blogRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
+  async delete(id: string): Promise<boolean> {
+    await this.blogRepository.delete(id);
+    return true;
   }
 }

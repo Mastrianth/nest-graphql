@@ -1,8 +1,10 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UseGuards } from '@nestjs/common';
+import { GqlJwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -18,6 +20,7 @@ export class UserResolver {
     return this.userService.getUserById(id);
   }
 
+  // @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => User)
   async createUser(
     @Args('createUserInput') createUserDto: CreateUserDto,

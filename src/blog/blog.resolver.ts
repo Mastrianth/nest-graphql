@@ -1,12 +1,24 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
 import { CreateBlogInput } from './dto/create-blog.input';
 import { UpdateBlogInput } from './dto/update-blog.input';
+import { Post } from 'src/post/entities/post.entity';
+import { PostService } from 'src/post/post.service';
 
 @Resolver(() => Blog)
 export class BlogResolver {
-  constructor(private readonly blogService: BlogService) {}
+  constructor(
+    private readonly blogService: BlogService,
+    private readonly postService: PostService,
+  ) {}
 
   @Mutation(() => Blog)
   createBlog(@Args('createBlogInput') createBlogInput: CreateBlogInput) {
@@ -14,12 +26,15 @@ export class BlogResolver {
   }
 
   @Query(() => [Blog], { name: 'blog' })
-  findAll() {
-    return this.blogService.findAll();
+  findAll(
+    @Args('page', { nullable: true }) page: number,
+    @Args('limit', { nullable: true }) limit: number,
+  ) {
+    return this.blogService.findAll(page, limit);
   }
 
   @Query(() => Blog, { name: 'blog' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.blogService.findOne(id);
   }
 
@@ -29,7 +44,12 @@ export class BlogResolver {
   }
 
   @Mutation(() => Blog)
-  removeBlog(@Args('id', { type: () => Int }) id: number) {
-    return this.blogService.remove(id);
+  removeBlog(@Args('id') id: string) {
+    return this.blogService.delete(id);
+  }
+
+  @ResolveField(() => [Post])
+  async posts(@Parent() blog: Blog) {
+    return this.postService.findByBlogId(blog.id);
   }
 }
