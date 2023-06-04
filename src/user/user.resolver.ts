@@ -10,11 +10,6 @@ import { GqlJwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => [User])
-  async users(): Promise<User[]> {
-    return this.userService.getUsers();
-  }
-
   @Query(() => User)
   async user(@Args('id') id: string): Promise<User> {
     return this.userService.getUserById(id);
@@ -39,17 +34,4 @@ export class UserResolver {
   async deleteUser(@Args('id') id: string): Promise<boolean> {
     return this.userService.deleteUser(id);
   }
-
-  @Mutation(() => String)
-  async login(
-    @Args('email') email: string,
-    @Args('password') password: string,
-  ): Promise<string> {
-    return this.userService.login(email, password);
-  }
-
-  // @Query()
-  // async me(@Context('Authorization') token: string): Promise<User> {
-  //   return this.userService.getUserByToken(token);
-  // }
 }

@@ -3,7 +3,7 @@ import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { RolesEnum } from '../../constants/roles.enum';
 
 @InputType()
-export class CreateUserDto {
+export class RegisterDto {
   @IsString()
   @Field()
   name: string;

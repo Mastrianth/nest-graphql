@@ -21,11 +21,10 @@ type User {
   email: String!
   password: String!
   role: String!
-  blog: Blog!
+  blogs: Blog!
 }
 
 type Query {
-  users: [User!]!
   user(id: String!): User!
   blog(id: String!): Blog!
   post(id: String!): Post!
@@ -35,10 +34,10 @@ type Mutation {
   createUser(createUserInput: CreateUserDto!): User!
   updateUser(updateUserInput: UpdateUserDto!): User!
   deleteUser(id: String!): Boolean!
-  login(email: String!, password: String!): String!
   createBlog(createBlogInput: CreateBlogInput!): Blog!
   updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
   removeBlog(id: String!): Blog!
+  getAllPostByBlogId(id: String!): Blog!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: String!): Post!
@@ -60,10 +59,12 @@ input UpdateUserDto {
 
 input CreateBlogInput {
   name: String!
+  userId: String!
 }
 
 input UpdateBlogInput {
   name: String
+  userId: String!
   id: String!
 }
 

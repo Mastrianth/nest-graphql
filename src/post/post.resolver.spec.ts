@@ -1,13 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostResolver } from './post.resolver';
 import { PostService } from './post.service';
+import { Post } from './entities/post.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('PostResolver', () => {
   let resolver: PostResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PostResolver, PostService],
+      providers: [
+        PostResolver,
+        PostService,
+        {
+          provide: getRepositoryToken(Post),
+          useValue: {},
+        },
+      ],
     }).compile();
 
     resolver = module.get<PostResolver>(PostResolver);

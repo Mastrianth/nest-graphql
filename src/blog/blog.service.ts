@@ -1,18 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateBlogInput } from './dto/create-blog.input';
 import { Blog } from './entities/blog.entity';
 import { Repository } from 'typeorm';
-import { RepositoryEnum } from 'src/constants/repository.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class BlogService {
   constructor(
-    @Inject(RepositoryEnum.blog)
+    @InjectRepository(Blog)
     private readonly blogRepository: Repository<Blog>,
   ) {}
 
-  async findAll(page: number, limit: number): Promise<Blog[]> {
-    const skip = (page - 1) * limit;
+  async findAll(page = 0, limit = 0): Promise<Blog[]> {
+    const skip = page > 0 ? (page - 1) * limit : 0;
     return this.blogRepository.find({ skip, take: limit });
   }
 
@@ -41,5 +42,15 @@ export class BlogService {
   async delete(id: string): Promise<boolean> {
     await this.blogRepository.delete(id);
     return true;
+  }
+
+  async getAllPostByBlogId(id: string): Promise<Post[]> {
+    const blog = await this.blogRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return blog.posts;
   }
 }

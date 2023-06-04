@@ -1,8 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { sign, verify } from 'jsonwebtoken';
 import { HashService } from 'src/hash/hash.service';
-import { UserService } from 'src/user/user.service';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { User } from '..//user/entity/user.entity';
+import { UserService } from '..//user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -20,13 +27,8 @@ export class AuthService {
     return null;
   }
 
-  generateToken(userId: string): string {
-    const payload = { userId };
-    return sign(payload, this.JWT_SECRET, { expiresIn: '1h' });
-  }
-
-  verifyToken(token: string): { userId: string } {
-    return verify(token, this.JWT_SECRET) as { userId: string };
+  generateToken(dto: Partial<User>): string {
+    return sign(dto, this.JWT_SECRET, { expiresIn: '29d' });
   }
 
   async login(email: string, pass: string) {
@@ -36,6 +38,21 @@ export class AuthService {
     }
     return {
       access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async register(dto: CreateUserDto) {
+    const { email } = dto;
+    const user = await this.usersService.getUserByEmail(email);
+    if (user) {
+      throw new HttpException(
+        'User with this email was created',
+        HttpStatus.CONFLICT,
+      );
+    }
+    const createUser = await this.usersService.createUser(dto);
+    return {
+      access_token: this.jwtService.sign(createUser),
     };
   }
 }

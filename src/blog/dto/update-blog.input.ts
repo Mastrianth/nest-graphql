@@ -11,4 +11,8 @@ export class UpdateBlogInput extends PartialType(CreateBlogInput) {
   @IsString()
   @Field({ nullable: true })
   name?: string;
+
+  @Field()
+  @IsString()
+  userId: string;
 }

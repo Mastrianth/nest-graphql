@@ -1,19 +1,17 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { HashService } from 'src/hash/hash.service';
-import { AuthService } from 'src/auth/auth.service';
-import { RepositoryEnum } from 'src/constants/repository.enum';
+import { HashService } from '../hash/hash.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(RepositoryEnum.user)
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly hashService: HashService,
-    private readonly authService: AuthService,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<User> {
@@ -26,12 +24,8 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
-  async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
   async getUserById(id: string): Promise<User> {
-    return this.userRepository.findOne({
+    return this.userRepository.findOneOrFail({
       where: {
         id,
       },
@@ -62,34 +56,5 @@ export class UserService {
   async deleteUser(id: string): Promise<boolean> {
     await this.userRepository.delete(id);
     return true;
-  }
-
-  async login(email: string, password: string): Promise<string> {
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-    });
-
-    if (!user) {
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    const isPasswordValid = this.hashService.comparePassword(
-      password,
-      user.password,
-    );
-
-    if (!isPasswordValid) {
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    return this.authService.generateToken(user.id);
   }
 }
