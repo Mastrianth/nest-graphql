@@ -6,4 +6,8 @@ export class CreatePostInput {
   @IsString()
   @Field()
   name: string;
+
+  @IsString()
+  @Field()
+  blogId: string;
 }

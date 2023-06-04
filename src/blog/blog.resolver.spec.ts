@@ -3,6 +3,7 @@ import { BlogResolver } from './blog.resolver';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../user/entity/user.entity';
 
 describe('BlogResolver', () => {
   let resolver: BlogResolver;
@@ -14,6 +15,10 @@ describe('BlogResolver', () => {
         BlogService,
         {
           provide: getRepositoryToken(Blog),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(User),
           useValue: {},
         },
       ],

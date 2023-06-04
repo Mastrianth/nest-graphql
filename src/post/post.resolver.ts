@@ -19,12 +19,19 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
-  updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
-    return this.postService.update(updatePostInput.id, updatePostInput);
+  updatePost(
+    @Args('updatePostInput') updatePostInput: UpdatePostInput,
+    @Args('userId') userId: string,
+  ) {
+    return this.postService.update(updatePostInput.id, updatePostInput, userId);
   }
 
   @Mutation(() => Post)
-  removePost(@Args('id') id: string) {
-    return this.postService.delete(id);
+  removePost(
+    @Args('id') id: string,
+    @Args('userId') userId: string,
+    @Args('blogId') blogId: string,
+  ) {
+    return this.postService.delete(id, userId, blogId);
   }
 }

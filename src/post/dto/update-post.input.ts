@@ -11,4 +11,8 @@ export class UpdatePostInput extends PartialType(CreatePostInput) {
   @IsString()
   @Field()
   name: string;
+
+  @IsString()
+  @Field()
+  blogId: string;
 }

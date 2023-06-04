@@ -6,8 +6,4 @@ export class CreateBlogInput {
   @Field()
   @IsString()
   name: string;
-
-  @Field()
-  @IsString()
-  userId: string;
 }

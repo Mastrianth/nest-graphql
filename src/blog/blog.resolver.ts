@@ -34,13 +34,16 @@ export class BlogResolver {
   }
 
   @Mutation(() => Blog)
-  updateBlog(@Args('updateBlogInput') updateBlogInput: UpdateBlogInput) {
-    return this.blogService.update(updateBlogInput.id, updateBlogInput);
+  updateBlog(
+    @Args('updateBlogInput') updateBlogInput: UpdateBlogInput,
+    @Args('userId') userId: string,
+  ) {
+    return this.blogService.update(updateBlogInput.id, updateBlogInput, userId);
   }
 
   @Mutation(() => Blog)
-  removeBlog(@Args('id') id: string) {
-    return this.blogService.delete(id);
+  removeBlog(@Args('id') id: string, @Args('userId') userId: string) {
+    return this.blogService.delete(id, userId);
   }
 
   @Mutation(() => Blog)

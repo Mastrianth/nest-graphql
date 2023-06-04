@@ -35,12 +35,12 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserDto!): User!
   deleteUser(id: String!): Boolean!
   createBlog(createBlogInput: CreateBlogInput!): Blog!
-  updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
-  removeBlog(id: String!): Blog!
+  updateBlog(updateBlogInput: UpdateBlogInput!, userId: String!): Blog!
+  removeBlog(id: String!, userId: String!): Blog!
   getAllPostByBlogId(id: String!): Blog!
-  createPost(createPostInput: CreatePostInput!): Post!
-  updatePost(updatePostInput: UpdatePostInput!): Post!
-  removePost(id: String!): Post!
+  createPost(createPostInput: CreatePostInput!, userId: String!): Post!
+  updatePost(updatePostInput: UpdatePostInput!, userId: String!): Post!
+  removePost(id: String!, userId: String!): Post!
 }
 
 input CreateUserDto {
@@ -59,13 +59,12 @@ input UpdateUserDto {
 
 input CreateBlogInput {
   name: String!
-  userId: String!
 }
 
 input UpdateBlogInput {
   name: String
-  userId: String!
   id: String!
+  userId: String!
 }
 
 input CreatePostInput {
