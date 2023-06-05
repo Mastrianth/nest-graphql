@@ -4,9 +4,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: doadmin
-      POSTGRES_PASSWORD: AVNS_cazWzMhL8fUb9RsQV5M
-      POSTGRES_DB: defaultdb
+      POSTGRES_USER: holy_user
+      POSTGRES_PASSWORD: uynr12ke56uaWk9vfYyQD5eBepPnrYEs
+      POSTGRES_DB: holy_db
     ports:
       - '5432:5432'
     volumes:
@@ -19,15 +19,15 @@ services:
     depends_on:
       - postgres
     environment:
-      POSTGRES_USER: doadmin
-      POSTGRES_PASSWORD: AVNS_cazWzMhL8fUb9RsQV5M
-      POSTGRES_DB: defaultdb
+      POSTGRES_USER: holy_user
+      POSTGRES_PASSWORD: uynr12ke56uaWk9vfYyQD5eBepPnrYEs
+      POSTGRES_DB: holy_db
       SIGN_IN_TOKEN_SECRET: tatat
-      DATABASE_HOST: db-postgresql-fra1-23515-do-user-13296757-0.b.db.ondigitalocean.com
+      DATABASE_HOST: dpg-chuunendvk4oliu0g4t0-a.frankfurt-postgres.render.com
       DATABASE_PORT: 5432
-      DATABASE_USERNAME: doadmin
-      DATABASE_NAME: defaultdb
-      DATABASE_PASSWORD: AVNS_cazWzMhL8fUb9RsQV5M
+      DATABASE_USERNAME: holy_user
+      DATABASE_NAME: holy_db
+      DATABASE_PASSWORD: uynr12ke56uaWk9vfYyQD5eBepPnrYEs
     ports:
       - '8080:3000'
     volumes:
