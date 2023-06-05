@@ -26,6 +26,7 @@ export class BlogService {
       where: {
         id,
       },
+      relations: ['author'],
     });
   }
 
@@ -34,22 +35,28 @@ export class BlogService {
       where: {
         id,
       },
+      relations: ['blogs'],
     });
   }
 
   async create(input: CreateBlogInput): Promise<Blog> {
     const user = await this.getUserById(input.userId);
+
     const blog = this.blogRepository.create({
       name: input.name,
-      author: user,
     });
-    return this.blogRepository.save(blog);
+    const createdBlog = await this.blogRepository.save(blog);
+    user.blogs.push(createdBlog);
+    await this.userRepository.save(user);
+    createdBlog.author = user;
+    await this.blogRepository.save(createdBlog);
+    return this.findOne(createdBlog.id);
   }
 
   async checkPermission(id: string, userId: string) {
     const user = await this.getUserById(userId);
     const usersBlog = user.blogs.map((el) => el.id);
-    if (user.role !== RolesEnum.moderator || !usersBlog.includes(id)) {
+    if (user.role !== RolesEnum.moderator && !usersBlog.includes(id)) {
       throw new HttpException(
         'You dont have a permission for this operation',
         HttpStatus.FORBIDDEN,
@@ -70,6 +77,16 @@ export class BlogService {
 
   async delete(id: string, userId: string): Promise<boolean> {
     await this.checkPermission(id, userId);
+
+    const [user, blog] = await Promise.all([
+      this.getUserById(userId),
+      this.findOne(id),
+    ]);
+    await this.blogRepository
+      .createQueryBuilder()
+      .relation(User, 'blogs')
+      .of(user)
+      .remove(blog);
     await this.blogRepository.delete(id);
     return true;
   }
@@ -79,6 +96,7 @@ export class BlogService {
       where: {
         id,
       },
+      relations: ['posts'],
     });
 
     return blog.posts;
