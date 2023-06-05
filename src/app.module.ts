@@ -34,7 +34,7 @@ import { readFileSync } from 'fs';
       migrations: ['src/migration/**/*.ts'],
       subscribers: ['src/subscriber/**/*.ts'],
       ssl: {
-        ca: readFileSync(join(__dirname, '../ca-certificate.crt')),
+        rejectUnauthorized: false,
       },
       synchronize: true,
       autoLoadEntities: true,
