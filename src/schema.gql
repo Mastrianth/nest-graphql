@@ -26,8 +26,9 @@ type User {
 
 type Query {
   user(id: String!): User!
-  blog(id: String!): Blog!
-  post(id: String!): Post!
+  blogs(page: Float, limit: Float): [Blog!]!
+  findBlog(id: String!): Blog!
+  getPost(id: String!): Post!
 }
 
 type Mutation {
@@ -36,11 +37,11 @@ type Mutation {
   deleteUser(id: String!): Boolean!
   createBlog(createBlogInput: CreateBlogInput!): Blog!
   updateBlog(updateBlogInput: UpdateBlogInput!, userId: String!): Blog!
-  removeBlog(id: String!, userId: String!): Blog!
-  getAllPostByBlogId(id: String!): Blog!
-  createPost(createPostInput: CreatePostInput!, userId: String!): Post!
+  removeBlog(id: String!, userId: String!): Boolean!
+  getAllPostByBlogId(id: String!): [Post!]!
+  createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!, userId: String!): Post!
-  removePost(id: String!, userId: String!): Post!
+  removePost(id: String!, userId: String!, blogId: String!): Boolean!
 }
 
 input CreateUserDto {
@@ -51,7 +52,7 @@ input CreateUserDto {
 }
 
 input UpdateUserDto {
-  id: Int!
+  id: String!
   name: String
   email: String
   role: String
@@ -59,19 +60,22 @@ input UpdateUserDto {
 
 input CreateBlogInput {
   name: String!
+  userId: String!
 }
 
 input UpdateBlogInput {
-  name: String
   id: String!
-  userId: String!
+  name: String
 }
 
 input CreatePostInput {
   name: String!
+  blogId: String!
+  userId: String!
 }
 
 input UpdatePostInput {
-  name: String!
   id: String!
+  name: String!
+  blogId: String!
 }

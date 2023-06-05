@@ -9,7 +9,6 @@ import { join } from 'path';
 import { BlogModule } from './blog/blog.module';
 import { PostModule } from './post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import strictEnv from './helpers/strictEnv';
 
 @Module({
   imports: [
@@ -25,11 +24,11 @@ import strictEnv from './helpers/strictEnv';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: strictEnv('DATABASE_HOST'),
-      port: +strictEnv('DATABASE_PORT'),
-      username: strictEnv('DATABASE_USERNAME'),
-      password: strictEnv('DATABASE_PASSWORD'),
-      database: strictEnv('DATABASE_NAME'),
+      host: 'postgres',
+      port: 5432,
+      username: 'holy_user',
+      password: 'holy_pass',
+      database: 'holy_db',
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: ['src/migration/**/*.ts'],
       subscribers: ['src/subscriber/**/*.ts'],
