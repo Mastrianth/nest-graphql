@@ -9,7 +9,6 @@ import { join } from 'path';
 import { BlogModule } from './blog/blog.module';
 import { PostModule } from './post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import strictEnv from './helpers/strictEnv';
 
 @Module({
   imports: [
