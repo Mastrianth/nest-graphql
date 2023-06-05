@@ -38,7 +38,11 @@ export class BlogService {
   }
 
   async create(input: CreateBlogInput): Promise<Blog> {
-    const blog = this.blogRepository.create(input);
+    const user = await this.getUserById(input.userId);
+    const blog = this.blogRepository.create({
+      name: input.name,
+      author: user,
+    });
     return this.blogRepository.save(blog);
   }
 
