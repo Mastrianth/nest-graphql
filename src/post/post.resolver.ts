@@ -13,8 +13,8 @@ export class PostResolver {
     return this.postService.create(createPostInput);
   }
 
-  @Query(() => Post, { name: 'post' })
-  findOne(@Args('id') id: string) {
+  @Query(() => Post)
+  getPost(@Args('id') id: string) {
     return this.postService.findOne(id);
   }
 
@@ -26,7 +26,7 @@ export class PostResolver {
     return this.postService.update(updatePostInput.id, updatePostInput, userId);
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => Boolean)
   removePost(
     @Args('id') id: string,
     @Args('userId') userId: string,

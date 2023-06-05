@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { RolesEnum } from '../../constants/roles.enum';
 import { Blog } from '../../blog/entities/blog.entity';
@@ -27,6 +33,9 @@ export class User {
   role: RolesEnum;
 
   @Field(() => Blog)
-  @OneToMany(() => Blog, (blog) => blog.id, { cascade: true })
+  @OneToMany(() => Blog, (blog) => blog.author, {
+    cascade: true,
+    nullable: true,
+  })
   blogs: Blog[];
 }

@@ -4,6 +4,7 @@ import {
   Column,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Post } from '../../post/entities/post.entity';
@@ -21,10 +22,11 @@ export class Blog {
   name: string;
 
   @Field(() => Post)
-  @OneToMany(() => Post, (post) => post.id, { cascade: true })
+  @JoinColumn()
+  @OneToMany(() => Post, (post) => post.blog, { cascade: true, nullable: true })
   posts: Post[];
 
   @Field(() => User)
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (autor) => autor.blogs, { nullable: true })
   author: User;
 }

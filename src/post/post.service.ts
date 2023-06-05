@@ -24,6 +24,7 @@ export class PostService {
       where: {
         id,
       },
+      relations: ['blog'],
     });
   }
 
@@ -32,6 +33,7 @@ export class PostService {
       where: {
         id,
       },
+      relations: ['blogs'],
     });
   }
 
@@ -41,9 +43,10 @@ export class PostService {
       where: {
         id: blogId,
       },
+      relations: ['posts'],
     });
     const posts = blog.posts.map((el) => el.id);
-    if (user.role !== RolesEnum.moderator || !posts.includes(id)) {
+    if (user.role !== RolesEnum.moderator && !posts.includes(id)) {
       throw new HttpException(
         'You dont have a permission for this operation',
         HttpStatus.FORBIDDEN,
@@ -53,17 +56,30 @@ export class PostService {
   }
 
   async create(input: CreatePostInput): Promise<Post> {
+    const user = await this.getUserById(input.userId);
     const blog = await this.blogRepository.findOneOrFail({
       where: {
         id: input.blogId,
       },
+      relations: ['posts', 'author'],
     });
+
+    if (blog.author.id !== user.id) {
+      throw new HttpException(
+        'You dont have a permission for this operation',
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
     const post = this.postRepository.create({
       name: input.name,
-      blog,
     });
-    return this.postRepository.save(post);
+    const createdPost = await this.postRepository.save(post);
+    blog.posts.push(post);
+    await this.blogRepository.save(blog);
+    createdPost.blog = blog;
+    await this.postRepository.save(createdPost);
+    return this.findOne(createdPost.id);
   }
 
   async update(
@@ -72,16 +88,23 @@ export class PostService {
     userId: string,
   ): Promise<Post> {
     await this.checkPermission(id, userId, input.blogId);
-    await this.postRepository.update(id, input);
-    return this.postRepository.findOne({
-      where: {
-        id,
-      },
+    await this.postRepository.update(id, {
+      name: input.name,
     });
+    return this.findOne(id);
   }
 
   async delete(id: string, userId: string, blogId: string): Promise<boolean> {
     await this.checkPermission(id, userId, blogId);
+    const [user, post] = await Promise.all([
+      this.getUserById(userId),
+      this.findOne(id),
+    ]);
+    await this.blogRepository
+      .createQueryBuilder()
+      .relation(Blog, 'posts')
+      .of(user)
+      .remove(post);
     const result = await this.postRepository.delete(id);
     return result.affected > 0;
   }

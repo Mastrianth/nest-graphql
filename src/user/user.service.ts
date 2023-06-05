@@ -25,12 +25,14 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<User> {
-    return this.userRepository.findOneOrFail({
+    return this.userRepository.findOne({
       where: {
         id,
       },
+      relations: ['blogs'],
     });
   }
+
   async getUserByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({
       where: {
