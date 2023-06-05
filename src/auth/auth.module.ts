@@ -3,7 +3,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
 import { ConfigModule } from '@nestjs/config';
-import strictEnv from 'src/helpers/strictEnv';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
@@ -15,7 +14,7 @@ import { UserModule } from 'src/user/user.module';
       session: true,
     }),
     JwtModule.register({
-      secret: strictEnv('SIGN_IN_TOKEN_SECRET'),
+      secret: 'tatat',
       signOptions: { expiresIn: '29d' },
     }),
     UserModule,
@@ -26,7 +25,7 @@ import { UserModule } from 'src/user/user.module';
       session: true,
     }),
     JwtModule.register({
-      secret: strictEnv('SIGN_IN_TOKEN_SECRET'),
+      secret: 'tatat',
       signOptions: { expiresIn: '29d' },
     }),
     AuthService,
